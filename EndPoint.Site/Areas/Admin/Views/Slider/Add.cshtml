@@ -1,0 +1,240 @@
+﻿
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<section class="basic-elements">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-wrap bar-success">
+                        <h4 class="card-title mb-0">افزودن اسلایدر جدید</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="px-3">
+                        <div class="form">
+                            <div class="form-body">
+                                <form class="row" enctype="multipart/form-data">
+                                    <div class="col-xl-4 col-lg-6 col-md-12 mb-1">
+                                        <fieldset class="form-group">
+
+                                            <label for="basicInput">آدرس لینک</label>
+                                            <input type="text" class="form-control" id="Link">
+                                        </fieldset>
+                                    </div>
+
+                                    <div class="col-xl-4 col-lg-6 col-md-12 mb-1">
+                                        <fieldset class="form-group">
+
+                                            <label for="basicInput">تصویر</label>
+                                            <input type="file" id="Images" />
+                                        </fieldset>
+                                    </div>
+
+                                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                                        <fieldset class="form-group">
+                                            <br />
+                                            <a id="AddNewSlider" class="btn btn-success col-md-12">آپلود تصویر</a>
+                                        </fieldset>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section scripts
+{
+    <link href="~/Sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <script src="~/Sweetalert2/sweetalert2.min.js"></script>
+
+    <script>
+        $('#AddNewSlider').on('click', function () {
+
+            var data = new FormData();
+            data.append("Link", $("#Link").val());
+
+            //دریافت عکس های انتخاب شده توسط کاربر و قرار دادن عکس ها در متغیر data
+            var productImages = document.getElementById("Images");
+
+            if (productImages.files.length > 0) {
+                data.append('Images-', productImages.files[0]);
+            }
+
+            // ارسال اطلاعات بع کنترلر
+            var ajaxRequest = $.ajax({
+                type: "POST",
+                url: "Add",
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (data) {
+
+                    if (data.isSeccess == true) {
+
+                        swal.fire(
+                            'موفق!',
+                            data.message,
+                            'success'
+                        ).then(function (isConfirm) {
+                            window.location.href = "/Admin/Slider/";
+
+                        });
+                    }
+                    else {
+
+                        swal.fire(
+                            'هشدار!',
+                            data.message,
+                            'warning'
+                        );
+                    }
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+
+            });
+
+            ajaxRequest.done(function (xhr, textStatus) {
+                // Do other operation
+            });
+            //$('#AddNewSlider').on('click', function () {
+            //    swal.fire({
+            //        title: 'اسلاید جدید',
+            //        text: "اسلاید جدید ذخیره شود؟",
+            //        icon: 'info',
+            //        showCancelButton: true,
+            //        confirmButtonColor: '#3085d6',
+            //        cancelButtonColor: '#d33',
+            //        confirmButtonText: 'بله ',
+            //        cancelButtonText: 'خیر'
+            //    }).then((result) => {
+            //        if (result.value) {
+
+            //            var data = new FormData;
+            //            data.append("src", $("#Src").val());
+
+            //            //دریافت عکس های انتخاب شده توسط کاربر و قرار دادن عکس ها در متغیر data
+            //            var productImages = document.getElementById("Images");
+
+            //            if (productImages.files.length > 0) {
+            //                for (var i = 0; i < productImages.files.length; i++) {
+            //                    data.append('Images-' + i, productImages.files[i]);
+            //                }
+            //            }
+
+
+            //            $.ajax({
+            //                contentType: 'application/x-www-form-urlencoded',
+            //                dataType: 'json',
+            //                type: "POST",
+            //                url: "Add",
+            //                data: data,
+            //                success: function (data) {
+            //                    if (data.isSuccess == true) {
+            //                        swal.fire(
+            //                            'موفق!',
+            //                            data.message,
+            //                            'success'
+            //                        ).then(function (isConfirm) {
+            //                            location.reload();
+            //                        });
+
+
+            //                    }
+            //                    else {
+
+            //                        swal.fire(
+            //                            'هشدار!',
+            //                            data.message,
+            //                            'warning'
+            //                        );
+
+            //                    }
+            //                },
+            //                error: function (request, status, error) {
+            //                    swal.fire(
+            //                        'هشدار!',
+            //                        request.responseText,
+            //                        'warning'
+            //                    );
+            //                }
+
+            //            });
+
+            //        }
+            //    });
+        });
+
+    </script>
+
+
+
+}
+
+@*$('#btnAddProduct').on('click', function () {
+
+                var data = new FormData();
+
+    //دریافت عکس های انتخاب شده توسط کاربر و قرار دادن عکس ها در متغیر data
+                var productImages = document.getElementById("Images");
+
+                if (productImages.files.length > 0) {
+                    for (var i = 0; i < productImages.files.length; i++) {
+                        data.append('Images-' + i, productImages.files[i]);
+                    }
+                }
+
+
+
+                // ارسال اطلاعات بع کنترلر
+                var ajaxRequest = $.ajax({
+                    type: "POST",
+                    url: "AddNewProduct",
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (data) {
+
+                        if (data.isSuccess == true) {
+
+                            swal.fire(
+                                'موفق!',
+                                data.message,
+                                'success'
+                            ).then(function (isConfirm) {
+                                window.location.href = "/Admin/Products/";
+
+                            });
+                        }
+                        else {
+
+                            swal.fire(
+                                'هشدار!',
+                                data.message,
+                                'warning'
+                            );
+                        }
+
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert(xhr.status);
+                        alert(thrownError);
+                    }
+
+                });
+
+                ajaxRequest.done(function (xhr, textStatus) {
+                    // Do other operation
+                });*@
+

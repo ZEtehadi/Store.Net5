@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "Clean_Architecture.Domain": {
+      "commandName": "Project"
+    }
+  }
+}

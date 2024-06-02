@@ -1,0 +1,318 @@
+﻿@using Clean_Architecture.Application.Services.Products.Queries.GetCategories;
+@model List<CategoriesDto>
+
+@{
+    ViewData["Title"] = "index";
+    Layout = "~/Areas/Admin/Views/Shared/_Adminlayout.cshtml";
+    string image = "";
+}
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Zero configuration table -->
+        <section id="configuration">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title-wrap bar-success">
+                                <h4 class="card-title">لیست دسته بندی ها</h4>
+                            </div>
+                        </div>
+                        <div class="card-body collapse show">
+                            <div class="card-block card-dashboard">
+                                <p class="card-text">دسته بندی محصولات فروشگاه باگتو</p>
+
+
+                                @if (ViewBag.HasParentOrNot == "Yes")@*یعنی میخواد برای همین پدر ،دسته بندی اضافه کنه*@
+                                {
+                                    <a href="~/admin/Categories/AddNewCategory?parentId=@ViewBag.HasParentTrue_Name" class="btn btn-success">افزودن فرزند جدید</a>
+                                }
+                                else@*یعنی کلا میخواد یک پدر( دسته بندی جدید) اضافه کنه*@
+                                {
+                                    <a href="~/admin/categories/addnewcategory" class="btn btn-success">افزودن دسته بندی جدید</a>
+                                }
+
+
+
+
+                                <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                                    <div class="col-sm-12">
+                                        <table class="table table-striped table-bordered zero-configuration dataTable" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="دسته بندی: activate to sort column descending" style="width: 100px;">دسته بندی</th>
+                                                    @*<th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="پدر: activate to sort column descending" style="width: 200px;">پدر</th>*@
+                                                    <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label=": activate to sort column descending" style="width: 350px;"></th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                @foreach (var item in Model)
+                                                {
+                                                    <tr role="row" class="odd">
+                                                        <td class="sorting_1">@item.Name</td>
+
+                                                        @*<td>
+                                                                @{
+                                                                    string Parent = item.Parent != null ? item.Parent.Name : "-";
+                                                                }
+                                                                <text>@Parent</text>
+                                                            </td>*@
+
+                                                        <td>
+                                                            @if (item.Parent == null)//itself=Parent  so  Adding Child
+                                                            {
+                                                                <a href="~/admin/Categories/AddNewCategory?parentId=@item.Id" class="btn btn-secondary">افزودن فرزند</a>
+                                                            }
+                                                            @if (item.HasChild == true)//has Child  so  Show Child
+                                                            {
+                                                                <a href="~/admin/Categories/index?ParentId=@item.Id" class="btn btn-secondary">مشاهده لیست فرزندها</a>
+                                                            }
+                                                          
+                                                            <a onclick="ShowModalEditCategory('@item.Id','@item.Name','@item.ImageSrc')" class="btn btn-info">ویرایش</a>
+                                                            <a onclick="DeleteCategory('@item.Id')" class="btn btn-danger">حذف</a>
+
+                                                            @if (item.IsActive)@*در حال حاضر  فعال است و میخواد غیر فعال بشه*@
+                                                            {
+                                                                <button class="btn btn-warning" onclick="CategoryStatucChange('@item.Id')"> غیر فعال</button>
+                                                            }
+                                                            else@*میخواد فعال بشه*@
+                                                            {
+                                                                <button class="btn btn-success" onclick="CategoryStatucChange('@item.Id')">  فعال</button>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+    <link href="~/Sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <script src="~/Sweetalert2/sweetalert2.min.js"></script>
+
+
+
+    <script>
+
+        function CategoryStatucChange(CatId) {
+            swal.fire({
+                title: 'تغیر وضعیت دست بندی',
+                text: "آیا از تغیر وضعیت دسته بندی مطمعن هستید؟",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'بله',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+                if (result.value) {
+                    var postData = {
+                        'CatId': CatId,
+                    };
+
+                    $.ajax({
+                        contentType: 'application/x-www-form-urlencoded',
+                        dataType: 'json',
+                        type: "POST",
+                        url: "CategoryStatusChange",
+                        data: postData,
+                        success: function (data) {
+                            if (data.isSuccess == true) {
+                                swal.fire(
+                                    'موفق!',
+                                    data.message,
+                                    'success'
+                                ).then(function (isConfirm) {
+                                    location.reload();
+                                });
+                            }
+                            else {
+
+                                swal.fire(
+                                    'هشدار!',
+                                    data.message,
+                                    'warning'
+                                );
+
+                            }
+                        },
+                        error: function (request, status, error) {
+                            alert(request.responseText);
+                        }
+
+                    });
+
+                }
+            })
+        }
+
+
+        function DeleteCategory(Id) {
+            var postData = { 'Id': Id };
+
+            $.ajax({
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json',
+                type: "POST",
+                url: "Delete",
+                data: postData,
+                success: function (data) {
+                    if (data.isSeccess == true) {
+                        swal.fire(
+                            'موفق!',
+                            data.message,
+                            'success'
+                        ).then(function (isConfirm) {
+                            location.reload();
+                        });
+                    }
+                    else {
+                        swal.fire(
+                            'هشدار!',
+                            data.message,
+                            'warning'
+                        );
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+
+
+        function ShowModalEditCategory(Id, Name, Photo) {
+            $('#Edit_Id').val(Id)
+            $('#Edit_Name').val(Name)
+          
+
+            var photoUrl = "/images/Categories/" + Photo;
+            var url = photoUrl;
+            var modalImage = $('#Edit_Photo');
+            modalImage.attr('src', url);
+
+            $('#EditCategory').modal('show');
+        }
+
+        function EditCategory() {
+
+
+            var data = new FormData();
+
+            data.append("Name", $("#Edit_Name").val());
+            data.append("Id", $("#Edit_Id").val());
+
+
+            var productImage = document.getElementById("Image");
+
+            if (productImage.files.length > 0) {
+                data.append('Src', productImage.files[0]);
+            }
+            //else {
+            //    productImage = document.getElementById("#Edit_Photo");
+            //    if (productImage.files.length > 0) {
+            //        data.append('Src', productImage.files[0]);
+            //    }
+            //}
+
+
+            // ارسال اطلاعات بع کنترلر
+            var ajaxRequest = $.ajax({
+                type: "POST",
+                url: "Edit",
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (data) {
+                    if (data.isSeccess == true) {
+                        swal.fire(
+                            'موفق!',
+                            data.message,
+                            'success'
+                        ).then(function (isConfirm) {
+                            location.reload();
+                        });
+                    }
+                    else {
+                        swal.fire(
+                            'هشدار!',
+                            data.message,
+                            'warning'
+                        );
+                    }
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+
+            $('#EditCategory').modal('hide');
+
+
+
+        }
+
+
+    </script>
+
+}
+
+@section Modals
+{
+
+    <!-- Modal Edit User -->
+    <div class="modal fade" id="EditCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">ویرایش دسته بندی</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                        <fieldset class="form-group">
+                            <input type="hidden" id="Edit_Id" />
+
+                            <label for="basicInput">دسته بندی</label>
+                            <input type="text" class="form-control" id="Edit_Name">
+
+                        </fieldset>
+                        <div class="col-xl-4 col-lg-6 col-md-12 mb-1">
+                            <fieldset class="form-group">
+                                <label for="basicInput">تصویر </label>
+                                
+                                <img id="Edit_Photo" width="100" height="100">
+                                <hr>
+                                <b>تغییر تصویر </b>
+                                <input type="file" class="form-control" accept="image/*" id="Image">
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" data-dismiss="modal">بستن</a>
+                    <a class="btn btn-primary" onclick="EditCategory()">اعمال تغییرات</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

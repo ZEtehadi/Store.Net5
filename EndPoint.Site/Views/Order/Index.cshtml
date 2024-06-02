@@ -1,0 +1,141 @@
+﻿@using Clean_Architecture.Application.Services.Orders.Queries.GetUserOrders;
+@model List<OrdersUserDto>
+
+@{
+    ViewData["Title"] = "User Orders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<OrderDetailUseDto> OrderDetailUseDtos = new List<OrderDetailUseDto>();
+    var orderID = 0;
+}
+
+<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+    <div class="col-sm-12">
+        <table class="table table-striped table-bordered zero-configuration dataTable" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+            <thead>
+                <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="شماره سفارش: activate to sort column descending" style="width: 222px;">شماره سفارش</th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="شماره فاکتور : activate to sort column ascending" style="width: 401px;">شماره فاکتور </th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="وضعیت : activate to sort column ascending" style="width: 401px;">وضعیت </th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="تاریخ ثبت سفارش : activate to sort column ascending" style="width: 401px;">تاریخ ثبت سفارش </th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="قیمت : activate to sort column ascending" style="width: 401px;">قیمت </th>
+                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="جزئیات سفارش : activate to sort column ascending" style="width: 401px;">جزئیات سفارش </th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr role="row" class="odd">
+                        <td class="sorting_1">@item.OrderId</td>
+                        <td>@item.RequestPayId</td>
+
+                        @if (item.OrderState == Clean_Architecture.Domain.Entities.Orders.OrderState.Processing)
+                        {
+                            <td>در حال پردازش</td>
+                        }
+                        else if (item.OrderState == Clean_Architecture.Domain.Entities.Orders.OrderState.Canceled)
+                        {
+                            <td>لغو شده</td>
+                        }
+                        else if (item.OrderState == Clean_Architecture.Domain.Entities.Orders.OrderState.Delivered)
+                        {
+                            <td>ارسال شده=</td>
+                        }
+
+                        <td>@item.OrderDate</td>
+                        <td>@item.Amount.ToString("n0")</td>
+                        <td>
+                            <button class="btn btn-info" onclick="OrderDetial('@item.OrderId')" >جزئیات سفارش</button>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">نمایش 1 تا 10 از 57 سطرها</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="DataTables_Table_0_previous"><a href="#" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0" class="page-link">قبلی</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="DataTables_Table_0" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item "><a href="#" aria-controls="DataTables_Table_0" data-dt-idx="2" tabindex="0" class="page-link">2</a></li><li class="paginate_button page-item "><a href="#" aria-controls="DataTables_Table_0" data-dt-idx="3" tabindex="0" class="page-link">3</a></li><li class="paginate_button page-item "><a href="#" aria-controls="DataTables_Table_0" data-dt-idx="4" tabindex="0" class="page-link">4</a></li><li class="paginate_button page-item "><a href="#" aria-controls="DataTables_Table_0" data-dt-idx="5" tabindex="0" class="page-link">5</a></li><li class="paginate_button page-item "><a href="#" aria-controls="DataTables_Table_0" data-dt-idx="6" tabindex="0" class="page-link">6</a></li><li class="paginate_button page-item next" id="DataTables_Table_0_next"><a href="#" aria-controls="DataTables_Table_0" data-dt-idx="7" tabindex="0" class="page-link">بعدی</a></li></ul></div></div></div>
+
+
+
+@section Scripts
+{
+    <link href="~/Sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <script src="~/Sweetalert2/sweetalert2.min.js"></script>
+
+    <script>
+        function OrderDetial(OrderId) {
+            var postData = {
+                'OrderId': OrderId
+            };
+
+            $.ajax({
+                //contentType: 'application/x-www-form-urlencoded',
+                dataType: 'json',
+                type: "GET",
+                url: "/Order/OrderDetial?OrderId=" + OrderId,
+                success: function (data) {
+                        var table = $('<table class="table table-striped"></table>');
+                        var thead = $('<thead><tr><th>نام محصول</th><th>قیمت</th><th>تعداد</th></tr></thead>');
+                        var tbody = $('<tbody></tbody>');
+                 
+                        if (data.length > 0) {
+
+                            data.forEach(function (detail) {
+                                var row = $('<tr></tr>');
+                                row.append($('<td></td>').text(detail.productName));
+                                row.append($('<td></td>').text(detail.price));
+                                row.append($('<td></td>').text(detail.count));
+
+                                tbody.append(row);
+                            });
+
+                        } else {
+                            tbody.append($('<tr><td colspan="3">هیچ داده‌ای وجود ندارد</td></tr>'));
+                        }
+
+                        console.log("finish Send data");
+                        table.append(thead);
+                        table.append(tbody);
+                    $('#DetailOrder .modal-body').html(table);
+
+                        $('#DetailOrder').modal('show');
+                  
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+        }
+
+
+    </script>
+
+}
+
+
+    <!-- show Deteil Orders -->
+    <div class="modal fade" id="DetailOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">جزئیات سفارش</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <table class="table table-striped">
+                        <thead> </thead>
+                        <tbody> </tbody>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" data-dismiss="modal">بستن</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
