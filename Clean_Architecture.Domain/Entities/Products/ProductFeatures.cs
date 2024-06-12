@@ -2,7 +2,7 @@
 
 namespace Clean_Architecture.Domain.Entities.Products
 {
-    public class ProductFeatures: BaseEntity
+    public class ProductFeatures: BaseEntity<long>
     {
         //has Relation to Product       
         //Must have one Product

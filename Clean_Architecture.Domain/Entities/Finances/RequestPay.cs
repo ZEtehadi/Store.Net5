@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Clean_Architecture.Domain.Entities.Finances
 {
-    public class RequestPay : BaseEntity
+    public class RequestPay : BaseEntity<long>
     {
         public Guid Guid { get; set; }
         public virtual User User { get; set; }

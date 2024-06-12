@@ -2,7 +2,7 @@
 
 namespace Clean_Architecture.Domain.Entities.Users
 {
-    public class UserInRole: BaseEntity
+    public class UserInRole: BaseEntity<long>
     {
         public long Id { get; set; }
 

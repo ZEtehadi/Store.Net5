@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Clean_Architecture.Domain.Entities.Users
 {
-    public class Role:BaseEntity
+    public class Role:BaseEntity<long>
     {
         public string Name { get; set; }
 

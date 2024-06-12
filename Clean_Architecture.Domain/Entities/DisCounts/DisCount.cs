@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Clean_Architecture.Domain.Entities.DisCounts
 {
-    public class DisCount:BaseEntity
+    public class DisCount:BaseEntity<long>
     {
         //تخفیف
         public string DisCountCode { get; set; }

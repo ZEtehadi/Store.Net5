@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Clean_Architecture.Domain.Entities.HomePage
 {
-   public class HomePageImages:BaseEntity
+   public class HomePageImages:BaseEntity<long>
     {
         public string Src { get; set; }
         public string Link { get; set; }

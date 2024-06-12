@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Clean_Architecture.Domain.Entities.Products
 {
-   public class Category :BaseEntity
+   public class Category :BaseEntity<long>
     {
         public string Name { get; set; }
         public string Src { get; set; } = @"images\Categories\Temp.jpg";

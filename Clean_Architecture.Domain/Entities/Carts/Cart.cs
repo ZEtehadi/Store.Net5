@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Clean_Architecture.Domain.Entities.Carts
 {
-    public class Cart : BaseEntity
+    public class Cart : BaseEntity<long>
     {
        public virtual User User { get; set; }
         public long? UserId { get; set; }

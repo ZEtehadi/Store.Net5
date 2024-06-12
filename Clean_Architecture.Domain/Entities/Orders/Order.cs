@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Clean_Architecture.Domain.Entities.Orders
 {
-    public class Order:BaseEntity
+    public class Order:BaseEntity<long>
     {
         public virtual User User { get; set; }
         public long UserId { get; set; }

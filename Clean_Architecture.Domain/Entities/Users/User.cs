@@ -12,7 +12,7 @@ namespace Clean_Architecture.Domain.Entities.Users
     // We Inherit from "BaseEntity" so the Property of "BaseEntity" are applied to 
     //"User" as well
     //so We don't have Id in "User" because the Id is in "BaseEntity"
-    public class User:BaseEntity
+    public class User:BaseEntity<long>
     {
         public string FullName { get; set; }
         public string Email { get; set; }

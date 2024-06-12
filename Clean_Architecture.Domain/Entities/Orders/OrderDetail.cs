@@ -3,7 +3,7 @@ using Clean_Architecture.Domain.Entities.Products;
 
 namespace Clean_Architecture.Domain.Entities.Orders
 {
-    public class OrderDetail : BaseEntity
+    public class OrderDetail : BaseEntity<long>
     {
         public virtual Order Order { get; set; }
         public long OrderId { get; set; }

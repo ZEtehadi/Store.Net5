@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Clean_Architecture.Domain.Entities.HomePage
 {
-   public class Slider:BaseEntity
+   public class Slider:BaseEntity<long>
     {
         public string Src { get; set; }
         public string Link { get; set; }

@@ -3,7 +3,7 @@ using Clean_Architecture.Domain.Entities.Products;
 
 namespace Clean_Architecture.Domain.Entities.Carts
 {
-    public class CartItems : BaseEntity
+    public class CartItems : BaseEntity<long>
     {
         public virtual Product Product { get; set; }
         public long ProductId { get; set; }
