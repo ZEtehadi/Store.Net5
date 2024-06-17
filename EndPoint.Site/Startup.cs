@@ -105,8 +105,9 @@ namespace EndPoint.Site
 
 
             //Creating Connection to DataBase
-            string ConnectionString = "Data Source=.; Initial Catalog=DotnetCore_Bugeto_5_EFCore_3_Clean_Architecture; Integrated Security=true;";
 
+            string ConnectionString = "Data Source=Z_E\\MSSQLSERVER_2022; Initial Catalog=DotnetCore_Bugeto_5_EFCore_3_Clean_Architecture; Integrated Security=true;";
+            //Data Source=. OR  Z_E\MSSQLSERVER_2022
             services.AddEntityFrameworkSqlServer().AddDbContext<DataBaseContext>(option => option.UseSqlServer(ConnectionString));
 
 
