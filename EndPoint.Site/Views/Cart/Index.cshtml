@@ -5,10 +5,11 @@
     ViewData["Title"] = "Cart Detail";
     Layout = "~/Views/Shared/_Layout.cshtml";
     int TotalPriceOne = 0;
-    var erroString=@TempData["ErrorSentence"];//Erro message
+    int PriceToPay = 0;
+    var erroString = @TempData["ErrorSentence"];//Erro message
 
 }
- 
+
 
 
 <section class="cart-home">
@@ -29,57 +30,57 @@
 
                             @if (Model != null)
                             {
-                                  @foreach (var item in Model.CartItems)
-                                  {
+                                @foreach (var item in Model.CartItems)
+                                {
 
-                                      <tr>
-                                          <th scope="row" class="product-cart-name">
-                                              <div class="product-thumbnail-img">
-                                                  <a href="#">
-                                                      <img src="~/@item.ImageSrc">
-                                                  </a>
-                                                  <div class="product-remove">
-                                                      <a href="~/cart/remove?CartItemId=@item.Id" class="remove">
-                                                          <i class="mdi mdi-close"></i>
-                                                      </a>
-                                                  </div>
-                                              </div>
-                                              <div class="product-title">
-                                                  <a href="~/products/detail?Id=@item.ProductId">
-                                                      @item.ProductName 
-                                                  </a>
+                                    <tr>
+                                        <th scope="row" class="product-cart-name">
+                                            <div class="product-thumbnail-img">
+                                                <a href="#">
+                                                    <img src="~/@item.ImageSrc">
+                                                </a>
+                                                <div class="product-remove">
+                                                    <a href="~/cart/remove?CartItemId=@item.Id" class="remove">
+                                                        <i class="mdi mdi-close"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="product-title">
+                                                <a href="~/products/detail?Id=@item.ProductId">
+                                                    @item.ProductName
+                                                </a>
 
-                                              </div>
-                                          </th>
-                                          <td class="product-cart-quantity">
-                                              <div class="required-number before">
-                                                  <div class="quantity">
-                                                      <input type="number" min="1" max="100" step="1" value="@item.Count"><div class="quantity-nav"><div class="quantity-button quantity-up" onclick="Increase('@item.Id')">+</div><div class="quantity-button quantity-down" onclick="Decrease('@item.Id')">-</div></div>
-                                                  </div>
-                                              </div>
-                                          </td>
-                                          <td class="product-cart-price">
-                                              <span class="amount">
-                                                  @item.Price.ToString("n0")
-                                                  <span>تومان</span>
-                                              </span>
-                                          </td>
-                                          <td class="product-cart-Total">
-                                              <span class="amount">
-                                                  @{
-                                                      TotalPriceOne = item.Count * item.Price;
-                                                  }
-                                                 @TotalPriceOne.ToString("n0")
-                                                  <span>تومان</span>
-                                              </span>
-                                          </td>
-                                      </tr>
-                                   }
-                             }
-                             else
-                             {
-                                  <h3> محصولی در سبد خرید وجود ندارد</h3>
-                             }
+                                            </div>
+                                        </th>
+                                        <td class="product-cart-quantity">
+                                            <div class="required-number before">
+                                                <div class="quantity">
+                                                    <input type="number" min="1" max="100" step="1" value="@item.Count"><div class="quantity-nav"><div class="quantity-button quantity-up" onclick="Increase('@item.Id')">+</div><div class="quantity-button quantity-down" onclick="Decrease('@item.Id')">-</div></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="product-cart-price">
+                                            <span class="amount">
+                                                @item.Price.ToString("n0")
+                                                <span>تومان</span>
+                                            </span>
+                                        </td>
+                                        <td class="product-cart-Total">
+                                            <span class="amount">
+                                                @{
+                                                    TotalPriceOne = item.Count * item.Price;
+                                                }
+                                                @TotalPriceOne.ToString("n0")
+                                                <span>تومان</span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <h3> محصولی در سبد خرید وجود ندارد</h3>
+                            }
                         </tbody>
                     </table>
                 </form>
@@ -123,11 +124,13 @@
                                 <span class="amount"> مجموع</span>
                                 @if (Model != null)
                                 {
-                                    <span> @Model.SumAmount.ToString("n0")</span>
+                                    <span id="TotalPriceToPay" > @Model.SumAmount.ToString("n0")</span>
+                                    PriceToPay = Convert.ToInt32(Model.SumAmount);
+
                                 }
                                 else
                                 {
-                                     <h3>-</h3>
+                                    <h3>-</h3>
                                 }
                             </li>
                             <li class="discount-code">
@@ -136,14 +139,20 @@
                                         <div class="coupon">
                                             <form action="#">
                                                 <input type="text" name="input-coupon" class="input-coupon-code" id="DisCountCode" placeholder="كد تخفیف:">
-                                                @*<button class="btn btn-coupon" type="submit">اعمال</button>*@
+                                                <button class="btn btn-coupon" type="submit">اعمال</button>
                                             </form>
                                         </div>
                                     </div>
                                     <div class="col-md-2 pl mt-5">
-                                        <div class="proceed-to-checkout">
-                                            <a href="#" id="checkout-button" class="checkout-button d-block">تسویه حساب</a>
-                                        </div>
+                                        <form asp-controller="ZarinpalPay" asp-action="Payment" method="post" id="checkout-form">
+                                            <input type="hidden" id="amount" name="amount" value="" />
+                                           
+                                            
+                                            <div class="proceed-to-checkout">
+                                                <a href="#" id="checkout-button" class="checkout-button d-block">تسویه حساب</a>
+                                            </div>
+                                        </form>
+                                        
                                     </div>
                                 </div>
                             </li>
@@ -162,11 +171,36 @@
 
     <script>
 
-            document.getElementById('checkout-button').addEventListener('click', function(event) {
-                event.preventDefault();  // جلوگیری از انجام رفتار پیش فرض لینک
-            var discountCode = document.getElementById('DisCountCode').value;
-            var checkoutUrl = '/Pay/index?DisCountCode=' + encodeURIComponent(discountCode);
-            window.location.href = checkoutUrl;
+        // document.getElementById('checkout-button').addEventListener('click', function (event) {
+        //     event.preventDefault();  // جلوگیری از انجام رفتار پیش فرض لینک
+        //    // var discountCode = document.getElementById('DisCountCode').value;
+        //     var discountCode = document.getElementById('TotalPriceToPay').value;
+        //     var checkoutUrl = '/Pay/index?DisCountCode=' + encodeURIComponent(discountCode);
+        //     //var checkoutUrl = '/Pay/index?DisCountCode=' + PriceToPay;
+        //     window.location.href = checkoutUrl;
+        // });
+
+
+        // document.getElementById('checkout-button').addEventListener('click', function (event) {
+        //     event.preventDefault();  // جلوگیری از انجام رفتار پیش‌فرض لینک
+
+        //     // مقدار عددی داخل span را می‌خوانیم
+        //     var totalPrice = document.getElementById('TotalPriceToPay').innerText;
+        //     var numericPrice = totalPrice.replace(/,/g, '');
+
+        //     // ساختن URL با مقدار عددی
+        //     var checkoutUrl = '/xx/Payment?amount=' + numericPrice;
+
+        //     // هدایت به URL ساخته‌شده
+        //     window.location.href = checkoutUrl;
+        // });
+            //or
+        document.getElementById('checkout-button').addEventListener('click', function (event) {
+            event.preventDefault(); 
+            var totalPrice = document.getElementById('TotalPriceToPay').innerText;
+            var numericPrice = totalPrice.replace(/,/g, '');
+            document.getElementById('amount').value = numericPrice;
+            document.getElementById('checkout-form').submit();
         });
 
 

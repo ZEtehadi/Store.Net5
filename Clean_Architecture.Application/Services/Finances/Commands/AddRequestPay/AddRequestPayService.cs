@@ -14,11 +14,12 @@ namespace Clean_Architecture.Application.Services.Finances.Commands.AddRequestPa
             _Context = Context;
         }
 
-        public ResultDto<ResultRequestPayDto> Execute(int Amount, long UserId, string DisCountCode)
+        public ResultDto<ResultRequestPayDto> Execute(int Amount, long UserId, string DisCountCode=null)
         {
+            DisCountCode = null;
             float discountCost;
             int FinalAmount = Amount;
-            long discountID =1;
+            long? discountID =null;
 
             if (DisCountCode != null)
             {
@@ -43,6 +44,10 @@ namespace Clean_Architecture.Application.Services.Finances.Commands.AddRequestPa
                  FinalAmount = Amount - (Convert.ToInt32(discountCost));
                 discountID = discount.Id;
                 /////Finish Calc DisCount
+            }
+            else
+            {
+                FinalAmount = FinalAmount;
             }
 
 

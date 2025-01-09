@@ -11,6 +11,7 @@ using Clean_Architecture.Application.Services.DisCounts.FacadPattern;
 using Clean_Architecture.Application.Services.Finances.Facad.FinancesFacad;
 using Clean_Architecture.Application.Services.HomePage.FacadPatern;
 using Clean_Architecture.Application.Services.Orders.Facad;
+using Clean_Architecture.Application.Services.Payments;
 using Clean_Architecture.Application.Services.Products.FacadPatern;
 using Clean_Architecture.Application.Services.Users.Command.EditUser;
 using Clean_Architecture.Application.Services.Users.Command.EditUserForAdmin;
@@ -87,7 +88,9 @@ namespace EndPoint.Site
             services.AddScoped<IGetUserDetailByIdService, GetUserDetailByIdService>();
             services.AddScoped<IDisCountFacad, DisCountFacad>();
             services.AddScoped<IEditUserForAdminService, EditUserForAdminService>();
+            services.AddScoped<IPaymentService, PaymentService>();
 
+            services.AddHttpClient();
 
             //set Authorization setting
             services.AddAuthorization(options =>
@@ -106,8 +109,8 @@ namespace EndPoint.Site
 
             //Creating Connection to DataBase
 
-            string ConnectionString = "Data Source=Z_E\\MSSQLSERVER_2022; Initial Catalog=DotnetCore_Bugeto_5_EFCore_3_Clean_Architecture; Integrated Security=true;";
-            //Data Source=. OR  Z_E\MSSQLSERVER_2022
+            string ConnectionString = Configuration.GetConnectionString("ConnectionString");
+            
             services.AddEntityFrameworkSqlServer().AddDbContext<DataBaseContext>(option => option.UseSqlServer(ConnectionString));
 
 

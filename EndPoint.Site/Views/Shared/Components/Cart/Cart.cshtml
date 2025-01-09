@@ -66,12 +66,45 @@
                     </div>
                     <div class="mini-card-button">
                         <a href="~/cart" class="view-card">مشاهده سبد خرید</a>
-                        <a href="~/Pay/" class="card-checkout">تسویه حساب</a>
+
+
                     </div>
+                  @*    <div class="mini-card-button">
+
+
+                         <form asp-controller="ZarinpalPay" asp-action="Payment" method="post" id="checkout-form">
+                             <input type="hidden" id="amount" name="amount" value=@Model.SumAmount />
+
+                             <div class="proceed-to-checkout">
+                                 <a href="#" id="checkout-button" class="checkout-button d-block">تسویه حساب</a>
+                             </div>
+                         </form>
+
+                     </div> *@
 
                 }
 
-                </div>
+            </div>
         </div>
     </div>
 </div>
+
+@* 
+ @section Scripts
+ {
+
+     <script src="~/SiteTemplate/assets/js/vendor/lightgallery-all.js"></script>
+     <script src="~/SiteTemplate/assets/js/vendor/jquery.ez-plus.js"></script>
+
+     <script>
+         document.getElementById('checkout-button').addEventListener('click', function (event) {
+             event.preventDefault();
+
+
+             document.getElementById('checkout-form').submit();
+         });
+
+
+     </script>
+
+ } *@
